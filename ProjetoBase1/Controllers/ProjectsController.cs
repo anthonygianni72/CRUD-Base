@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoBase1.Data;
+using ProjetoBase1.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +10,40 @@ namespace ProjetoBase1.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
+        private readonly DataContext _context;
+        public ProjectsController(DataContext context)
+        {
+            _context = context;
+        }
         // GET: api/<ValuesController1>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Projects> Get()
         {
-            return new string[] { "value1", "val23ue2" };
+            return _context.Projects;
         }
 
         // GET api/<ValuesController1>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        /*public string Get(int id)
         {
-            return "value2";
-        }
+            return _context.Projects.FirstOrDefault()
+        }*/
 
         // POST api/<ValuesController1>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post(Projects project)
         {
+            try
+            {
+                _context.Projects.Add(project); 
+                _context.SaveChanges();
+                return Ok(project);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // PUT api/<ValuesController1>/5
